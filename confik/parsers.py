@@ -34,6 +34,11 @@ class ConfikParser:
         assert isinstance(choices, Iterable), "choices must be an iterable"
         assert isinstance(raise_exception, bool), "raise_exception must be a boolean"
 
+        if default and choices:
+            assert (
+                default in choices
+            ), "default value is not in the list of provided choices"
+
     def get(
         self,
         key,
@@ -51,7 +56,7 @@ class ConfikParser:
 
         if env is None:
             if default_factory:
-                env = default_factory(key)
+                return default_factory(key)
             elif raise_exception:
                 raise ConfikError(
                     "{key} variable can't be of type None".format(key=key)
@@ -64,12 +69,22 @@ class ConfikParser:
                 choices=", ".join(choices),
             )
 
-        try:
-            if cast:
-                return cast(env)
+        if cast:
+            try:
+                if cast is bool:
+                    truthy_values = ("True", "true", "1")
+                    falsy_values = ("False", "false", "0")
+                    allowed_values = (*truthy_values, *falsy_values)
 
-            return env
-        except ValueError:
-            raise ConfikError(
-                "value {v} can't be casted into {c}".format(v=env, c=cast.__name__)
-            )
+                    assert env in allowed_values, "{} not in [{}]".format(
+                        env, ", ".join(allowed_values)
+                    )
+                    return env in truthy_values
+
+                return cast(env)
+            except ValueError:
+                raise ConfikError(
+                    "value {v} can't be casted into {c}".format(v=env, c=cast.__name__)
+                )
+
+        return env

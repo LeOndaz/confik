@@ -11,7 +11,7 @@ def get(
     cast=None,
     default_factory=None,
     choices=tuple(),
-    raise_exception=False,
+    raise_exception=True,
 ):
     """An interface to confik.get(...)
 

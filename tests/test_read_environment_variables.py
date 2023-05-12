@@ -1,7 +1,10 @@
 import random
 import string
 
+import pytest
+
 import confik
+from confik import ConfikError
 
 
 def get_random_key():
@@ -20,8 +23,9 @@ def test_read_variable_from_os():
 
 def test_get_non_existent_key():
     random_key = get_random_key()
-    env = confik.get(random_key)
-    assert env is None, "env has a value of {v}".format(v=env)
+
+    with pytest.raises(ConfikError):
+        confik.get(random_key)
 
 
 def test_default_value():
@@ -56,3 +60,20 @@ def test_csv_elements_has_no_trailing_or_preceding_space():
             i=i,
             element=element,
         )
+
+
+def test_read_truthy_bools():
+    for i in range(1, 4):
+        env = confik.get("VARIABLE_WITH_TRUE_VALUE_{i}".format(i=i), cast=bool)
+        assert env is True, "Expected True, got {}".format(env)
+
+
+def test_read_falsy_bools():
+    for i in range(1, 4):
+        env = confik.get("VARIABLE_WITH_FALSE_VALUE_{i}".format(i=i), cast=bool)
+        assert env is False, "Expected False, got {}".format(env)
+
+
+def test_read_integer():
+    env = confik.get("VARIABLE_WITH_INTEGER", cast=int)
+    assert isinstance(env, int)
