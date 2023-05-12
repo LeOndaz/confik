@@ -3,19 +3,19 @@ import os
 from pathlib import Path
 
 
-class EnvMappingProxy:
-    def __init__(self, path=Path("."), *args, **kwargs):
-        assert isinstance(path, (str, Path)), "unsupported path type {t}".format(
-            t=type(path)
-        )
+class MapConfigToMappingProxy:
+    def get_mapping(self, path):
+        """
+        Should return a mapping from the path given
+        :param path: str
+        :return: Mapping
+        """
+        raise NotImplementedError
 
-        environ = os.environ.copy()
 
-        if isinstance(path, str):
-            path = Path(path)
-
-        if path.suffix != ".env":
-            path = path / ".env"
+class EnvMappingProxy(MapConfigToMappingProxy):
+    def get_mapping(self, path):
+        mapping = {}
 
         with contextlib.suppress(FileNotFoundError):
             with open(path, "r") as f:
@@ -26,9 +26,25 @@ class EnvMappingProxy:
                         entry.append("")
 
                     name, value = entry
-                    environ[name] = value.replace('"', "")
+                    mapping[name] = value.replace('"', "")
 
-        self.environ = environ
+        return mapping
+
+    def __init__(self, path=Path("."), *args, **kwargs):
+        assert isinstance(path, (str, Path)), "unsupported path type {t}".format(
+            t=type(path)
+        )
+
+        if isinstance(path, str):
+            path = Path(path)
+
+        if path.suffix != ".env":
+            path = path / ".env"
+
+        self.environ = {
+            **os.environ,
+            **self.get_mapping(path),
+        }
 
     def get(self, key, default):
         return self.environ.get(key, default)

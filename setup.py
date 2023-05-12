@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name="confik",
-    version="1.0.0",
+    version="1.0.1",
     description="Config parser for environment variables",
     author="LeOndaz",
     author_email="ahmeddark369@gmail.com",
