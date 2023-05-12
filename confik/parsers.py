@@ -1,11 +1,11 @@
 from collections.abc import Callable, Iterable
 
 from confik.exceptions import ConfikError
-from confik.proxies import EnvFileMappingProxy
+from confik.proxies import EnvMappingProxy
 
 
 class ConfikParser:
-    proxy_class = EnvFileMappingProxy
+    proxy_class = EnvMappingProxy
 
     def __init__(self, path=".", *args, **kwargs):
         self.source = self.proxy_class(*args, path=path, **kwargs)
