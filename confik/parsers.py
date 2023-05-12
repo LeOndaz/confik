@@ -13,11 +13,11 @@ class ConfikParser:
     def validate_params(
         self,
         key,
-        cast=str,
-        default=None,
-        default_factory=None,
-        choices=None,
-        raise_exception=False,
+        cast,
+        default,
+        default_factory,
+        choices,
+        raise_exception,
     ):
         if choices is None:
             choices = set()
