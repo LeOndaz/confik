@@ -37,6 +37,6 @@ admin_password = confik.get("ADMIN_PASSWORD", default_factory=factory)
 
 allowed_hosts = confik.get("ALLOWED_HOSTS", cast=confik.csv)
 
-debug = confik.get('DEBUG', cast=bool, choices=['True', 'False'])
+debug = confik.get('DEBUG', cast=bool)
 
 ```
