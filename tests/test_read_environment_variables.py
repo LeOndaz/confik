@@ -77,3 +77,13 @@ def test_read_falsy_bools():
 def test_read_integer():
     env = confik.get("VARIABLE_WITH_INTEGER", cast=int)
     assert isinstance(env, int)
+
+
+def test_read_not_bool_as_bool():
+    with pytest.raises(AssertionError):
+        env = confik.get("PATH", cast=bool)
+
+
+def test_confik_boolean_same_as_python_bool():
+    with pytest.raises(AssertionError):
+        env = confik.get("PATH", cast=confik.boolean)

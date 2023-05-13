@@ -2,6 +2,7 @@ from collections.abc import Callable, Iterable
 
 from confik.exceptions import ConfikError
 from confik.proxies import EnvMappingProxy
+from confik.utils import boolean
 
 
 class ConfikParser:
@@ -72,15 +73,7 @@ class ConfikParser:
         if cast:
             try:
                 if cast is bool:
-                    truthy_values = ("True", "true", "1")
-                    falsy_values = ("False", "false", "0")
-                    allowed_values = (*truthy_values, *falsy_values)
-
-                    assert env in allowed_values, "{} not in [{}]".format(
-                        env, ", ".join(allowed_values)
-                    )
-                    return env in truthy_values
-
+                    return boolean(env)
                 return cast(env)
             except ValueError:
                 raise ConfikError(

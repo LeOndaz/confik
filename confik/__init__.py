@@ -1,6 +1,6 @@
 from .exceptions import ConfikError
 from .parsers import ConfikParser
-from .utils import csv
+from .utils import boolean, csv
 
 confik = ConfikParser()
 

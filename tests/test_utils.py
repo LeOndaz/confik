@@ -1,5 +1,3 @@
-import pytest
-
 from confik.utils import validate_choices
 
 
