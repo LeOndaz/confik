@@ -20,7 +20,7 @@ class EnvMappingProxy(MapConfigToMappingProxy):
         with contextlib.suppress(FileNotFoundError):
             with open(path, "r") as f:
                 for line in f.readlines():
-                    entry = line.strip().split("=")
+                    entry = line.strip().split("=", 1)
 
                     if len(entry) == 1:
                         entry.append("")

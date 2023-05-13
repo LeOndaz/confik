@@ -87,3 +87,8 @@ def test_read_not_bool_as_bool():
 def test_confik_boolean_same_as_python_bool():
     with pytest.raises(AssertionError):
         env = confik.get("PATH", cast=confik.boolean)
+
+
+def test_read_value_with_equal_signs():
+    env = confik.get("URL_WITH_QUERY_PARAMS")
+    assert env == "http://localhost:8000/api/orders?branch_id=qwe241="
