@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import Union
+
 from .exceptions import ConfikError
 from .parsers import ConfikParser
 from .utils import boolean, csv
@@ -24,3 +27,8 @@ def get(
     :return: str
     """
     return confik.get(key, default, cast, default_factory, choices, raise_exception)
+
+
+def read_env(path: Union[str, Path]) -> ConfikParser:
+    """Creates a ConfikParser, it's provided for convenience"""
+    return ConfikParser(path)
