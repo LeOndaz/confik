@@ -26,7 +26,7 @@ class EnvMappingProxy(MapConfigToMappingProxy):
                         entry.append("")
 
                     name, value = entry
-                    mapping[name] = value.replace('"', "")
+                    mapping[name] = value.replace('"', "").replace("'", "")
 
         return mapping
 
