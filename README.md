@@ -83,4 +83,6 @@ class SecretsManagerProxy(confik.MapConfigToMappingProxy):
 class SecretsManagerConfigParser(confik.ConfikParser):
     proxy_class = SecretsManagerProxy
 
+
+confik = SecretsManagerConfigParser()
 ```

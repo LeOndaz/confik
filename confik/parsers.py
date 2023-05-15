@@ -8,8 +8,8 @@ from confik.utils import boolean
 class ConfikParser:
     proxy_class = EnvMappingProxy
 
-    def __init__(self, path=".", *args, **kwargs):
-        self.source = self.proxy_class(*args, path=path, **kwargs)
+    def __init__(self, *args, **kwargs):
+        self.source = self.proxy_class(*args, **kwargs)
 
     def validate_params(
         self,

@@ -6,7 +6,7 @@ from .parsers import ConfikParser
 from .proxies import MapConfigToMappingProxy
 from .utils import boolean, csv
 
-confik = ConfikParser()
+confik = ConfikParser(path=".")
 
 
 def get(
