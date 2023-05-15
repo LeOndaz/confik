@@ -81,14 +81,32 @@ def test_read_integer():
 
 def test_read_not_bool_as_bool():
     with pytest.raises(AssertionError):
-        env = confik.get("PATH", cast=bool)
+        confik.get("PATH", cast=bool)
 
 
 def test_confik_boolean_same_as_python_bool():
     with pytest.raises(AssertionError):
-        env = confik.get("PATH", cast=confik.boolean)
+        confik.get("PATH", cast=confik.boolean)
 
 
 def test_read_value_with_equal_signs():
     env = confik.get("URL_WITH_QUERY_PARAMS")
     assert env == "http://localhost:8000/api/orders?branch_id=qwe241="
+
+
+def test_env_in_choices():
+    choices = ["C1", "C2", "C3"]
+    env = confik.get("VARIABLE_WITH_CHOICES", choices=choices)
+
+    assert (
+        env in choices
+    ), "VARIABLE_WITH_CHOICES has a value {v} which is not in provided choices {c}".format(
+        v=env, c=", ".join(choices)
+    )
+
+
+def test_default_in_choices():
+    choices = ["C1", "C2", "C3"]
+
+    with pytest.raises(AssertionError):
+        confik.get("VARIABLE_WITH_CHOICES", choices=choices, default="C_NOT_IN_CHOICES")

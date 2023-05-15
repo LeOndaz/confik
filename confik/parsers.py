@@ -20,9 +20,6 @@ class ConfikParser:
         choices,
         raise_exception,
     ):
-        if choices is None:
-            choices = set()
-
         assert isinstance(key, str), "key must be a string"
         assert isinstance(cast, Callable) or cast is None, "cast must be a callable"
         assert (
