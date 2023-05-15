@@ -1,6 +1,7 @@
 import contextlib
 import os
 from pathlib import Path
+from typing import Union
 
 
 class MapConfigToMappingProxy:
@@ -30,7 +31,7 @@ class EnvMappingProxy(MapConfigToMappingProxy):
 
         return mapping
 
-    def __init__(self, path=Path("."), *args, **kwargs):
+    def __init__(self, path: Union[Path, str] = Path("."), *args, **kwargs):
         assert isinstance(path, (str, Path)), "unsupported path type {t}".format(
             t=type(path)
         )
