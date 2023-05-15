@@ -3,6 +3,7 @@ from typing import Union
 
 from .exceptions import ConfikError
 from .parsers import ConfikParser
+from .proxies import MapConfigToMappingProxy
 from .utils import boolean, csv
 
 confik = ConfikParser()

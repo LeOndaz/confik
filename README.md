@@ -43,6 +43,7 @@ debug = confik.get('DEBUG', cast=bool)
 
 The default confik instance looks for .env in the base directory of your project, if
 for some reason you have a different place for the .env file, you can use
+
 ```python
 from confik import read_env
 
@@ -52,3 +53,34 @@ confik = read_env("confik/path/to/.env")
 and use it with the same interface as mentioned above.
 
 It's worth noting that confik works with both .env and os.env at the same time, it looks in both.
+
+### Integrate with [AWS Secrets manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_cache-python.html)
+
+```python
+# here's the example from official secrets manager docs
+# make sure to install the required libraries
+
+import botocore
+import botocore.session
+from aws_secretsmanager_caching import SecretCache, SecretCacheConfig
+import confik
+
+client = botocore.session.get_session().create_client('secretsmanager')
+cache_config = SecretCacheConfig()
+cache = SecretCache(config=cache_config, client=client)
+
+
+class SecretsManagerProxy(confik.MapConfigToMappingProxy):
+    def get(self, key, default):
+        value = cache.get_secret_string(key)
+
+        if value is None:
+            return default
+
+        return value
+
+
+class SecretsManagerConfigParser(confik.ConfikParser):
+    proxy_class = SecretsManagerProxy
+
+```
