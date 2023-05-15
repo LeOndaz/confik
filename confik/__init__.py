@@ -2,11 +2,11 @@ from pathlib import Path
 from typing import Union
 
 from .exceptions import ConfikError
-from .parsers import ConfikParser
+from .parsers import EnvConfikParser
 from .proxies import MapConfigToMappingProxy
 from .utils import boolean, csv
 
-confik = ConfikParser(path=".")
+confik = EnvConfikParser(path=".")
 
 
 def get(
@@ -30,6 +30,6 @@ def get(
     return confik.get(key, default, cast, default_factory, choices, raise_exception)
 
 
-def read_env(path: Union[str, Path]) -> ConfikParser:
+def read_env(path: Union[str, Path]) -> EnvConfikParser:
     """Creates a ConfikParser, it's provided for convenience"""
-    return ConfikParser(path)
+    return EnvConfikParser(path)

@@ -6,7 +6,7 @@ from confik.utils import boolean
 
 
 class ConfikParser:
-    proxy_class = EnvMappingProxy
+    proxy_class = None
 
     def __init__(self, *args, **kwargs):
         self.source = self.proxy_class(*args, **kwargs)
@@ -78,3 +78,7 @@ class ConfikParser:
                 )
 
         return env
+
+
+class EnvConfikParser(ConfikParser):
+    proxy_class = EnvMappingProxy
