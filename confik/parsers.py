@@ -1,7 +1,7 @@
 from collections.abc import Callable, Iterable
 
 from confik.exceptions import ConfikError
-from confik.proxies import EnvMappingProxy
+from confik.proxies import EnvMappingProxy, MapConfiKToMappingProxy
 from confik.utils import boolean
 
 
@@ -9,7 +9,7 @@ class ConfikParser:
     proxy_class = None
 
     def __init__(self, *args, **kwargs):
-        self.source = self.proxy_class(*args, **kwargs)
+        self.source: MapConfiKToMappingProxy = self.proxy_class(*args, **kwargs)
 
     def validate_params(
         self,
@@ -37,21 +37,15 @@ class ConfikParser:
                 default in choices
             ), "default value is not in the list of provided choices"
 
-    def get(
+    def process_env(
         self,
+        env,
         key,
-        default=None,
-        cast=None,
-        default_factory=None,
-        choices=tuple(),
-        raise_exception=True,
+        cast,
+        default_factory,
+        choices,
+        raise_exception,
     ):
-        self.validate_params(
-            key, cast, default, default_factory, choices, raise_exception
-        )
-
-        env = self.source.get(key, default)
-
         if env is None:
             if default_factory:
                 return default_factory(key)
@@ -78,6 +72,41 @@ class ConfikParser:
                 )
 
         return env
+
+    def get(
+        self,
+        key,
+        default=None,
+        cast=None,
+        default_factory=None,
+        choices=tuple(),
+        raise_exception=True,
+    ):
+        self.validate_params(
+            key, cast, default, default_factory, choices, raise_exception
+        )
+
+        env = self.source.get(key, default)
+        return self.process_env(
+            env, key, cast, default_factory, choices, raise_exception
+        )
+
+    async def aget(
+        self,
+        key,
+        default=None,
+        cast=None,
+        default_factory=None,
+        choices=tuple(),
+        raise_exception=True,
+    ):
+        self.validate_params(
+            key, cast, default, default_factory, choices, raise_exception
+        )
+        env = await self.source.aget(key, default)
+        return self.process_env(
+            env, key, cast, default_factory, choices, raise_exception
+        )
 
 
 class EnvConfikParser(ConfikParser):

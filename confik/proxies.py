@@ -4,19 +4,41 @@ from pathlib import Path
 from typing import Union
 
 
-class MapConfigToMappingProxy:
+class MapConfiKToMappingProxy:
+    async def aget(self, key, default=None):
+        raise NotImplementedError
+
+    def get(self, key, default=None):
+        raise NotImplementedError
+
     def get_mapping(self, path):
         """
         Should return a mapping from the path given
         :param path: str
         :return: Mapping
         """
-        raise NotImplementedError
+        return NotImplementedError
 
 
-class EnvMappingProxy(MapConfigToMappingProxy):
+class EnvMappingProxy(MapConfiKToMappingProxy):
+    def __init__(self, path: Union[Path, str] = Path("."), *args, **kwargs):
+        assert isinstance(path, (str, Path)), "unsupported path type {t}".format(
+            t=type(path)
+        )
+
+        if isinstance(path, str):
+            path = Path(path)
+
+        if path.suffix != ".env":
+            path = path / ".env"
+
+        self.environ = self.get_mapping(path)
+
+    def get(self, key, default=None):
+        return self.environ.get(key, default)
+
     def get_mapping(self, path):
-        mapping = {}
+        mapping = os.environ.copy()
 
         with contextlib.suppress(FileNotFoundError):
             with open(path, "r") as f:
@@ -30,22 +52,3 @@ class EnvMappingProxy(MapConfigToMappingProxy):
                     mapping[name] = value.replace('"', "").replace("'", "")
 
         return mapping
-
-    def __init__(self, path: Union[Path, str] = Path("."), *args, **kwargs):
-        assert isinstance(path, (str, Path)), "unsupported path type {t}".format(
-            t=type(path)
-        )
-
-        if isinstance(path, str):
-            path = Path(path)
-
-        if path.suffix != ".env":
-            path = path / ".env"
-
-        self.environ = {
-            **os.environ,
-            **self.get_mapping(path),
-        }
-
-    def get(self, key, default):
-        return self.environ.get(key, default)

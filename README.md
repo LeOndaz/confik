@@ -70,8 +70,8 @@ cache_config = SecretCacheConfig()
 cache = SecretCache(config=cache_config, client=client)
 
 
-class SecretsManagerProxy(confik.MapConfigToMappingProxy):
-    def get(self, key, default):
+class SecretsManagerProxy(confik.MapConfiKToMappingProxy):
+    def get(self, key, default=None):
         value = cache.get_secret_string(key)
 
         if value is None:
@@ -79,10 +79,19 @@ class SecretsManagerProxy(confik.MapConfigToMappingProxy):
 
         return value
 
+    # You could use the async version if you're using an async library
+    async def aget(self, key, default=None):
+        pass
 
-class SecretsManagerConfigParser(confik.ConfikParser):
+
+class SecretsManagerConfiKParser(confik.ConfikParser):
     proxy_class = SecretsManagerProxy
 
 
-confik = SecretsManagerConfigParser()
+confik = SecretsManagerConfiKParser()
+SECRET = confik.get('SECRET_FROM_SECRETS_MANAGER')
+
+# if you're using the async version
+async def get_secret(name):
+    return await confik.aget(name)
 ```

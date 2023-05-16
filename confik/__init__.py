@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Union
 
 from .exceptions import ConfikError
-from .parsers import EnvConfikParser
-from .proxies import MapConfigToMappingProxy
+from .parsers import ConfikParser, EnvConfikParser
+from .proxies import MapConfiKToMappingProxy
 from .utils import boolean, csv
 
 confik = EnvConfikParser(path=".")
